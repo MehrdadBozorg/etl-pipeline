@@ -85,3 +85,12 @@ SELECT * FROM transformed_data LIMIT 10;
 6- run `\q` to quit the database.
 
 7- run `exit` to quit the bash.
+
+
+## Contributing
+
+Pull requests are welcome! Please open an issue for feature requests or bug reports.
+
+## License
+
+This project is licensed under the MIT License.
