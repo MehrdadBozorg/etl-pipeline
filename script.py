@@ -6,10 +6,14 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+
 # Configure logging
 logging.basicConfig(filename='etl_pipeline.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def extract_data(file_path: Path):
+    """
+    Read csv file and 
+    """
     logging.info(f"Extracting data from {file_path}")
     try:
         return pd.read_csv(file_path)
@@ -17,14 +21,22 @@ def extract_data(file_path: Path):
         logging.error(f"Error extracting data: {e}")
         raise
 
-def convert_to_standard_date(date_str):
+
+def convert_to_standard_date(date_str) -> str | None:
+    """
+    Standardize the date values
+    """
     try:
         return parser.parse(str(date_str)).strftime('%Y-%m-%d')  # Convert to string to avoid issues
     except Exception as e:
         logging.warning(f"Date parsing failed for value {date_str}: {e}")
         return None  # Return None if the date format is invalid
 
-def transform_data(df):
+
+def transform_data(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Process data in dataframe, standardize the date valuess and fill the empty values in data
+    """
     logging.info("Starting data transformation.")
     
     # Standardize date formats
@@ -55,7 +67,11 @@ def transform_data(df):
     
     return df
 
-def load_data(df, db_url):
+
+def load_data(df: pd.DataFrame, db_url: str):
+    """
+    Store the data frame in the database
+    """
     logging.info("Starting data load into PostgreSQL.")
     try:
         engine = create_engine(db_url)
@@ -64,6 +80,7 @@ def load_data(df, db_url):
     except Exception as e:
         logging.error(f"Error loading data into PostgreSQL: {e}")
         raise
+
 
 def main():
     load_dotenv()
@@ -87,6 +104,7 @@ def main():
     load_data(df, db_url)
     
     logging.info('ETL process completed successfully.')
+
 
 if __name__ == "__main__":
     main()
