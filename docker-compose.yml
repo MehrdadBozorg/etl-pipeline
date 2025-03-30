@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: etl-pipeline-app
+    environment:
+      DB_URL: postgresql://your_username:your_password@db:5432/your_database  # "db" stands for hostname here
+      DATA_PATH: data/input_data.csv  # Not required
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    command: ["poetry", "run", "python", "script.py"]
+
+volumes:
+  postgres_data:
